@@ -1,11 +1,19 @@
+include!("core/Color.rs");
+
 fn main() {
-    println!("Version: {}-{}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
-    println!("Author: Github mychinesepyl");
-    println!("Use modules: ndarray(0.15.6)");
+    println!(
+        "Version: {}-{}
+Author: Github mychinesepyl
+Use modules: ndarray(0.15.6)",
+        env!("CARGO_PKG_NAME"),
+        env!("CARGO_PKG_VERSION")
+    );
     println!("");
-
-    let vec_a = ndarray::Array::from(vec![1.0, 0.0, 0.5]);
-    let vec_b = ndarray::Array::from(vec![0.6, -0.2, -0.7]);
-
-    println!("A dot B: {}", vec_a.dot(&vec_b));
+    let color = Color::new(&[-1.0, 1.0, 0.7, -0.3]);
+    print!("Test Color: [");
+    for elem in color.get() {
+        print!("{},", elem);
+    }
+    print!("\x1b[1D]");
+    println!("");
 }

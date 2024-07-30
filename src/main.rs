@@ -1,4 +1,5 @@
 include!("core/Color.rs");
+include!("core/Vec.rs");
 
 fn main() {
     println!(
@@ -8,6 +9,7 @@ Author: Github mychinesepyl",
         env!("CARGO_PKG_VERSION")
     );
     println!("");
-    let color = Color::new(&[-1.0, 0.1, 0.7, -0.3]);
-    println!("Color: {:?}", color.get());
+    let v1: [f32; 2] = [f32::sin(0f32), f32::cos(0f32)];
+    let v2: [f32; 2] = [f32::sin(90f32), f32::cos(90f32)];
+    println!("Color: {:?}", vec::dot(&v1, &v2));
 }

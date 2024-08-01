@@ -36,7 +36,7 @@ jobs:
         path: target/release
   
   macOS:
-    runs-on: [macOS-10.13]
+    runs-on: [macOS-latest]
 
     steps:
     - uses: actions/checkout@v4

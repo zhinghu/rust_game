@@ -10,7 +10,7 @@ env:
 jobs:
   build:
 
-    runs-on: windows-latest
+    runs-on: [linux, x64]
 
     steps:
     - uses: actions/checkout@v4
@@ -20,4 +20,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: rust_game(ubuntu)
-        path: target/release/rust_game.exe
+        path: target/release/rust_game

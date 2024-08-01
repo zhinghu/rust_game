@@ -1,4 +1,4 @@
-name: Rust
+name: Build Release
 
 on:
   push:
@@ -9,7 +9,7 @@ env:
 
 jobs:
   Windows:
-    runs-on: [windows-latest]
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v4
@@ -22,7 +22,7 @@ jobs:
         path: target/release
   
   macOS:
-    runs-on: [macOS-latest]
+    runs-on: macOS-latest
 
     steps:
     - uses: actions/checkout@v4

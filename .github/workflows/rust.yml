@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build
-      run: cargo build --release
+      run: cargo b -r --target=x86_64-unknown-linux-gnu
     - name: Archive production artifacts
       uses: actions/upload-artifact@v4
       with:
@@ -28,7 +28,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build
-      run: cargo build --release
+      run: cargo b -r
     - name: Archive production artifacts
       uses: actions/upload-artifact@v4
       with:
@@ -41,7 +41,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build
-      run: cargo build --release
+      run: cargo b -r
     - name: Archive production artifacts
       uses: actions/upload-artifact@v4
       with:

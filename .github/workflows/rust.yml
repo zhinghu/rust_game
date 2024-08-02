@@ -1,4 +1,4 @@
-name: Build
+name: "Build Test"
 
 on:
   push:
@@ -9,27 +9,9 @@ env:
 
 jobs:
   Windows:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
     - name: Build
-      run: cargo update;cargo b -r
-    - name: Archive production artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: rust_game(windows).exe
-        path: target/release
-  
-  macOS:
-    runs-on: macOS-latest
-
-    steps:
-    - uses: actions/checkout@v4
-    - name: Build
-      run: cargo update;cargo b -r
-    - name: Archive production artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: rust_game(macOS)
-        path: target/release
+      run: cargo b -r

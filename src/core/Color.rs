@@ -8,6 +8,7 @@ impl Color {
             vec4: *vec4,
         }
     }
+    // Get RGBA values(0-255)
     pub fn get(&self) -> [u8; 4]{
         let vec4: [f32; 4] = self.vec4;
         let mut result: [u8; 4] = [0, 0, 0, 0];

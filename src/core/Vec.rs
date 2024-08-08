@@ -7,4 +7,13 @@ pub mod vec {
         assert_eq!(a.len(), b.len());
         a.iter().zip(b.iter()).map(|(&v1, &v2)| v1 * v2).sum()
     }
+
+    pub fn add<'a>(a: &'a[f32], b: &'a[f32]) -> &'a[f32] {
+        assert_eq!(a.len(), b.len());
+        let mut c: &mut [f32] = &mut a;
+        for n in 0..a.len() {
+            c[n] = a[n] + b[n];
+        }
+        c
+    }
 }

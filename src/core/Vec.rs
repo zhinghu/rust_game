@@ -8,12 +8,37 @@ pub mod vec {
         a.iter().zip(b.iter()).map(|(&v1, &v2)| v1 * v2).sum()
     }
 
-    pub fn add<'a>(a: &'a[f32], b: &'a[f32]) -> &'a[f32] {
+    // 向量加法
+    pub fn add(a: &[f32], b: &[f32]) -> Vec4 {
         assert_eq!(a.len(), b.len());
-        let mut c: &mut [f32] = &mut a;
-        for n in 0..a.len() {
-            c[n] = a[n] + b[n];
+        let mut result = [0.0; 4];
+        for i in 0..a.len() {
+            result[i] = a[i] + b[i];
         }
-        c
+        result
+    }
+
+    // 向量减法
+    pub fn sub(a: &[f32], b: &[f32]) -> Vec4 {
+        assert_eq!(a.len(), b.len());
+        let mut result = [0.0; 4];
+        for i in 0..a.len() {
+            result[i] = a[i] - b[i];
+        }
+        result
+    }
+
+    // 标量乘法
+    pub fn scalar_mul(a: &[f32], scalar: f32) -> Vec4 {
+        let mut result = [0.0; 4];
+        for i in 0..a.len() {
+            result[i] = a[i] * scalar;
+        }
+        result
+    }
+
+    // 向量的模长
+    pub fn magnitude(a: &[f32]) -> f32 {
+        a.iter().map(|&v| v * v).sum::<f32>().sqrt()
     }
 }

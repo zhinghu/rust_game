@@ -2,7 +2,7 @@ name: "Build Test"
 
 on:
   push:
-    branches: [ "*" ]
+    branches: [ "master" ]
 
 env:
   CARGO_TERM_COLOR: always

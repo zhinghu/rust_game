@@ -2,7 +2,7 @@ name: "Build Test"
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "beta" ]
 
 env:
   CARGO_TERM_COLOR: always
@@ -13,5 +13,5 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Build
-      run: cargo b -r
+    - name: Test
+      run: cargo test

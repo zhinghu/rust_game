@@ -42,3 +42,47 @@ pub mod vec {
         a.iter().map(|&v| v * v).sum::<f32>().sqrt()
     }
 }
+
+
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_dot_product() {
+        let a = [1.0, 2.0, 3.0];
+        let b = [4.0, 5.0, 6.0];
+        assert_eq!(dot(&a, &b), 32.0);
+    }
+
+    #[test]
+    fn test_add_vec2() {
+        let a = [1.0, 2.0];
+        let b = [3.0, 4.0];
+        assert_eq!(add_vec2(&a, &b), [4.0, 6.0]);
+    }
+
+    #[test]
+    fn test_sub_vec3() {
+        let a = [5.0, 6.0, 7.0];
+        let b = [1.0, 2.0, 3.0];
+        assert_eq!(sub_vec3(&a, &b), [4.0, 4.0, 4.0]);
+    }
+
+    #[test]
+    fn test_scalar_mul_vec4() {
+        let a = [1.0, 2.0, 3.0, 4.0];
+        let scalar = 2.0;
+        assert_eq!(scalar_mul_vec4(&a, scalar), [2.0, 4.0, 6.0, 8.0]);
+    }
+
+    #[test]
+    fn test_magnitude_vec2() {
+        let a = [3.0, 4.0];
+        assert_eq!(magnitude(&a), 5.0);
+    }
+
+   
+}

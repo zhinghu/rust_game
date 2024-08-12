@@ -4,8 +4,6 @@ pub struct Color {
 
 impl Color {
     pub fn new(vec4: &[f32; 4]) -> Color {
-        println!("created Color: {:?}", vec4);
-
         Color {
             vec4: *vec4,
         }

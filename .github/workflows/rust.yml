@@ -15,3 +15,8 @@ jobs:
     - uses: actions/checkout@v4
     - name: Test
       run: cargo test
+<<<<<<< HEAD
+=======
+    - name: Build
+      run: cargo b -r
+>>>>>>> eb7b54796d15c8142f4f841d84a85034232e90fb

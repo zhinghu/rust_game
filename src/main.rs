@@ -1,4 +1,4 @@
-include!("core/Color.rs");
+mod kernel;
 
 fn main() {
     println!(

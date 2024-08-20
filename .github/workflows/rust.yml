@@ -16,4 +16,4 @@ jobs:
     - name: Test
       run: cargo test
     - name: Build
-      run: cargo b -r
+      run: cargo b -rv

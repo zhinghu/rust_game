@@ -1,4 +1,4 @@
-use crate::kernel::color::to_rgba3;
+use super::color::to_rgba3;
 
 pub struct Render {
     width: usize,

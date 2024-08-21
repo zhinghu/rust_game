@@ -5,3 +5,4 @@ edition = "2021"
 
 [dependencies]
 glm = "0.2.3"
+termsize = "0.1.9"

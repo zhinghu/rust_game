@@ -1,4 +1,6 @@
 pub mod color;
 pub mod console;
-pub mod str;
-pub mod thread_pool;
+mod render;
+pub use render::Render;
+mod thread_pool;
+pub use thread_pool::ThreadPool;

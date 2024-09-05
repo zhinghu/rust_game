@@ -1,4 +1,3 @@
-#[allow(unused)]
 pub struct ThreadPool {
     workers: Vec<Worker>,
     sender: std::sync::mpsc::Sender<Job>,
@@ -30,7 +29,6 @@ impl ThreadPool {
 
 type Job = Box<dyn FnOnce() + Send + 'static>;
 
-#[allow(unused)]
 struct Worker {
     id: usize,
     thread: std::thread::JoinHandle<()>,

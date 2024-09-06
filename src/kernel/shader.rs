@@ -1,31 +1,31 @@
-pub struct Shader<T>
+pub struct Shader<F>
 where
-    T: Fn(),
+    F: Fn() + 'static,
 {
-    shader: FShader<T>,
+    shader: FShader<F>,
 }
 
-impl<T> Shader<T>
+impl<F> Shader<F>
 where
-    T: Fn(),
+    F: Fn() + 'static,
 {
-    pub fn new(shader: FShader<T>) -> Shader<T> {
+    pub fn new(shader: FShader<F>) -> Shader<F> {
         Shader { shader }
     }
 }
 
-pub struct FShader<T>
+pub struct FShader<F>
 where
-    T: Fn(),
+    F: Fn() + 'static,
 {
-    program: T,
+    program: F,
 }
 
-impl<T> FShader<T>
+impl<F> FShader<F>
 where
-    T: Fn(),
+    F: Fn() + 'static,
 {
-    pub fn new(program: T) -> FShader<T> {
+    pub fn new(program: F) -> FShader<F> {
         FShader { program }
     }
 }

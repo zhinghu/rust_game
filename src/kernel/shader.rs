@@ -1,31 +1,15 @@
-pub struct Shader<F>
-where
-    F: Fn() + 'static,
-{
-    shader: FShader<F>,
+pub struct FData {
+    pub x: usize,
+    pub y: usize,
+    pub rgb: glm::Vector3<f32>,
 }
 
-impl<F> Shader<F>
-where
-    F: Fn() + 'static,
-{
-    pub fn new(shader: FShader<F>) -> Shader<F> {
-        Shader { shader }
-    }
+pub trait FShader {
+    fn main(&self, data: FData) -> FData;
 }
 
-pub struct FShader<F>
-where
-    F: Fn() + 'static,
-{
-    program: F,
-}
+static mut shaders: Vec<Box<dyn FShader>> = Vec::new();
 
-impl<F> FShader<F>
-where
-    F: Fn() + 'static,
-{
-    pub fn new(program: F) -> FShader<F> {
-        FShader { program }
-    }
+pub fn add(shader: Box<dyn FShader + 'static>) {
+    unsafe { shaders.push(shader) };
 }

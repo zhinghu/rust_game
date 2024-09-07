@@ -1,5 +1,9 @@
 mod kernel;
-use kernel::console;
+mod shader;
+use kernel::{
+    console,
+    shader::{FData, FShader},
+};
 
 fn main() {
     println!(

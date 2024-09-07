@@ -3,7 +3,4 @@ pub mod console;
 
 mod render;
 pub use render::Render;
-mod thread_pool;
-pub use thread_pool::ThreadPool;
-mod shader;
-pub use shader::{FShader, Shader};
+pub mod shader;

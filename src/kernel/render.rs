@@ -23,7 +23,7 @@ impl Render {
     }
 
     pub fn render(&self) -> String {
-        let mut result: String = String::new();
+        let mut result: String = String::from("\x1b[0;0H");
         for y in 0..self.height {
             for x in 0..self.width {
                 let color = self.getPixel(x, y);

@@ -8,6 +8,15 @@ pub trait FShader {
     fn main(&self, data: FData) -> FData;
 }
 
+pub type shaders_type = Vec<Box<dyn FShader>>;
+pub type shader_type = Box<dyn FShader + 'static>;
+pub struct empty_shader;
+impl FShader for empty_shader {
+    fn main(&self, data: FData) -> FData {
+        data
+    }
+}
+
 static mut shaders: Vec<Box<dyn FShader>> = Vec::new();
 
 pub fn add(shader: Box<dyn FShader + 'static>) {

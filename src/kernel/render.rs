@@ -1,4 +1,5 @@
 use super::color::to_rgba3;
+use super::shader::*;
 
 pub struct Render {
     width: usize,
@@ -36,6 +37,11 @@ impl Render {
         }
 
         format!("{result}\x1b[0m")
+    }
+
+    pub fn use_shader(&mut self, mut shaders: shaders_type) {
+        shaders.resize_with(self.width * self.height, || Box::new(empty_shader));
+        self.pixels.fill_with(|| glm::vec3(-1.0, -1.0, -1.0));
     }
 
     pub fn getWidth(&self) -> usize {

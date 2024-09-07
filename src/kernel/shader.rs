@@ -1,3 +1,4 @@
+#[derive(Debug)]
 pub struct FData {
     pub x: usize,
     pub y: usize,
@@ -19,6 +20,10 @@ impl FShader for empty_shader {
 
 static mut shaders: Vec<Box<dyn FShader>> = Vec::new();
 
-pub fn add(shader: Box<dyn FShader + 'static>) {
+pub fn add(shader: shader_type) {
     unsafe { shaders.push(shader) };
+}
+
+pub fn get_shaders() -> &'static shaders_type {
+    unsafe { &shaders }
 }

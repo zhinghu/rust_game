@@ -1,9 +1,8 @@
 mod kernel;
 mod shader;
-use kernel::{
-    console,
-    shader::{FData, FShader},
-};
+use std::borrow::Borrow;
+
+use kernel::console;
 
 fn main() {
     println!(
@@ -21,7 +20,7 @@ Author: Github mychinesepyl",
     });
     let mut color = kernel::Render::new(term_w, term_h);
 
-    // awa
+    /* awa
     for y in 0..color.getHeight() {
         for x in 0..color.getWidth() {
             color.setPixel(
@@ -36,6 +35,8 @@ Author: Github mychinesepyl",
         }
     }
 
-    // console::debug(format!("{}", color.render()));
+    // console::debug(format!("{}", color.render())); */
+    kernel::shader::add(Box::new(shader::test_fs::test_fs));
+    color.use_shader(kernel::shader::get_shaders());
     println!("{}", color.render());
 }

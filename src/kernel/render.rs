@@ -26,7 +26,7 @@ impl Render {
     }
 
     pub fn render(&self) -> String {
-        let mut result: String = String::from("\x1b[0;0H");
+        let mut result: String = String::from("");
         for y in 0..self.height {
             for x in 0..self.width {
                 let color = self.getPixel(x, y);
@@ -41,19 +41,20 @@ impl Render {
         format!("{result}\x1b[0m")
     }
 
-    pub fn use_shader(&mut self, mut shaders: shaders_type) {
-        shaders.resize_with(self.width * self.height, || Box::new(empty_shader));
-        for i in 0..self.pixels.len() {
-            if let Some(pixel) = self.pixels.get_mut(i) {
-                *pixel = shaders
-                    .get(i)
-                    .unwrap()
-                    .main(FData {
-                        x: i % self.width,
-                        y: (i as f32 / self.width as f32) as usize,
-                        rgb: *pixel,
-                    })
-                    .rgb;
+    pub fn use_shader(&mut self, shaders: &'static shaders_type) {
+        for si in 0..shaders.len() {
+            for i in 0..self.pixels.len() {
+                if let Some(pixel) = self.pixels.get_mut(i) {
+                    *pixel = shaders
+                        .get(si)
+                        .unwrap()
+                        .main(FData {
+                            x: i % self.width,
+                            y: (i as f32 / self.width as f32) as usize,
+                            rgb: *pixel,
+                        })
+                        .rgb;
+                }
             }
         }
     }

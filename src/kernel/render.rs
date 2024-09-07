@@ -1,3 +1,5 @@
+use std::borrow::Borrow;
+
 use super::color::to_rgba3;
 use super::shader::*;
 
@@ -42,7 +44,17 @@ impl Render {
     pub fn use_shader(&mut self, mut shaders: shaders_type) {
         shaders.resize_with(self.width * self.height, || Box::new(empty_shader));
         for i in 0..self.pixels.len() {
-            self.pixels.get_mut(i).unwrap();
+            if let Some(pixel) = self.pixels.get_mut(i) {
+                *pixel = shaders
+                    .get(i)
+                    .unwrap()
+                    .main(FData {
+                        x: i % self.width,
+                        y: (i as f32 / self.width as f32) as usize,
+                        rgb: *pixel,
+                    })
+                    .rgb;
+            }
         }
     }
 
@@ -56,8 +68,8 @@ impl Render {
         self.pixels.get(y * self.width + x).unwrap()
     }
     pub fn setPixel(&mut self, x: usize, y: usize, color: &mut glm::Vector3<f32>) {
-        if let Some(pixels) = self.pixels.get_mut(y * self.width + x) {
-            *pixels = *color
+        if let Some(pixel) = self.pixels.get_mut(y * self.width + x) {
+            *pixel = *color
         };
     }
 }

@@ -27,7 +27,7 @@ Author: Github mychinesepyl",
             color.setPixel(
                 x,
                 y,
-                glm::vec3(
+                &mut glm::vec3(
                     ((x as f32 / color.getWidth() as f32) * 2.0 - 1.0) as f32,
                     ((y as f32 / color.getHeight() as f32) * 2.0 - 1.0) as f32,
                     -1.0,

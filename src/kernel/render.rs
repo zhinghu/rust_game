@@ -28,7 +28,7 @@ impl Render {
         for y in 0..self.height {
             for x in 0..self.width {
                 let color = self.getPixel(x, y);
-                let color = to_rgba3(color);
+                let color = to_rgba3(*color);
                 result = format!(
                     "{result}\x1b[48;2;{};{};{}m\u{0020}",
                     color.x as u8, color.y as u8, color.z as u8
@@ -41,7 +41,9 @@ impl Render {
 
     pub fn use_shader(&mut self, mut shaders: shaders_type) {
         shaders.resize_with(self.width * self.height, || Box::new(empty_shader));
-        self.pixels.fill_with(|| glm::vec3(-1.0, -1.0, -1.0));
+        for i in 0..self.pixels.len() {
+            self.pixels.get_mut(i).unwrap();
+        }
     }
 
     pub fn getWidth(&self) -> usize {
@@ -50,10 +52,12 @@ impl Render {
     pub fn getHeight(&self) -> usize {
         self.height
     }
-    pub fn getPixel(&self, x: usize, y: usize) -> glm::Vector3<f32> {
-        self.pixels[y * self.width + x]
+    pub fn getPixel(&self, x: usize, y: usize) -> &glm::Vector3<f32> {
+        self.pixels.get(y * self.width + x).unwrap()
     }
-    pub fn setPixel(&mut self, x: usize, y: usize, color: glm::Vector3<f32>) {
-        self.pixels[y * self.width + x] = color;
+    pub fn setPixel(&mut self, x: usize, y: usize, color: &mut glm::Vector3<f32>) {
+        if let Some(pixels) = self.pixels.get_mut(y * self.width + x) {
+            *pixels = *color
+        };
     }
 }

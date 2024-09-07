@@ -18,9 +18,11 @@ where
     }
 
     pub fn run(&self) {
-        self.worker.into_iter().map(|&f| f());
+        for f in &self.worker {
+            f();
+        }
     }
 
     /// Loop Run
-    pub fn LRun(&self) {}
+    pub fn lrun(&self) {}
 }

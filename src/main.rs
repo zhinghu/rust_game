@@ -1,6 +1,6 @@
 mod kernel;
 mod shader;
-use std::borrow::Borrow;
+use std::time::Instant;
 
 use kernel::console;
 
@@ -22,8 +22,11 @@ Author: Github mychinesepyl",
 
     // console::debug(format!("{}", color.render())); */
     kernel::shader::add(Box::new(shader::test_fs::test_fs));
-    // let presult = color.render();
     loop {
-        println!("{}", color.render());
+        //     println!("{}", color.render());
+        let a = Instant::now();
+        let presult = color.render();
+        let a = a.elapsed();
+        console::debug(format!("render time: {}", a.as_secs_f32()));
     }
 }

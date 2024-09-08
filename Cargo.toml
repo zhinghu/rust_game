@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 glm = "0.2.3"
+rayon = "1.10.0"
 termsize = "0.1.9"
 
 [profile.release]

@@ -20,23 +20,10 @@ Author: Github mychinesepyl",
     });
     let mut color = kernel::Render::new(term_w, term_h);
 
-    /* awa
-    for y in 0..color.getHeight() {
-        for x in 0..color.getWidth() {
-            color.setPixel(
-                x,
-                y,
-                &mut glm::vec3(
-                    ((x as f32 / color.getWidth() as f32) * 2.0 - 1.0) as f32,
-                    ((y as f32 / color.getHeight() as f32) * 2.0 - 1.0) as f32,
-                    -1.0,
-                ),
-            );
-        }
-    }
-
     // console::debug(format!("{}", color.render())); */
     kernel::shader::add(Box::new(shader::test_fs::test_fs));
-    color.use_shader(kernel::shader::get_shaders());
-    println!("{}", color.render());
+    // let presult = color.render();
+    loop {
+        println!("{}", color.render());
+    }
 }

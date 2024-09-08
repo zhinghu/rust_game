@@ -11,4 +11,8 @@ impl FShader for test_fs {
 
         data
     }
+
+    fn get_name(&self) -> String {
+        "test_fs".to_string()
+    }
 }

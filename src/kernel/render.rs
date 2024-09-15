@@ -15,7 +15,7 @@ impl Render {
     pub fn new(width: usize, height: usize) -> Render {
         assert!(width != 0);
         assert!(height != 0);
-        console::info("creating buffer vector".to_string());
+        csl_info!("creating buffer vector");
         let mut pixels: Vec<glm::Vector3<f32>> = vec![];
         pixels.resize(width * height, glm::vec3(-1., -1., -1.));
         Render {
@@ -31,6 +31,23 @@ impl Render {
 
     pub fn render(&mut self) -> String {
         let mut result: String = String::from("\x1b[0;0H");
+
+        self.use_shader();
+
+        for y in 0..self.height {
+            for x in 0..self.width {
+                let color = to_rgba3(*self.get_pixel(x, y));
+                result = format!(
+                    "{result}\x1b[48;2;{};{};{}m\u{0020}",
+                    color.x as u8, color.y as u8, color.z as u8
+                );
+            }
+        }
+
+        format!("{}\x1b[0m", result)
+    }
+
+    pub fn use_shader(&mut self) {
         // apply shaders
         for s in self.shaders.iter() {
             self.pixels
@@ -46,30 +63,17 @@ impl Render {
                         .rgb;
                 });
         }
-
-        for y in 0..self.height {
-            for x in 0..self.width {
-                let color = to_rgba3(*self.getPixel(x, y));
-                result = format!(
-                    "{result}\x1b[48;2;{};{};{}m\u{0020}",
-                    color.x as u8, color.y as u8, color.z as u8
-                );
-            }
-        }
-
-        format!("{}\x1b[0m", result)
     }
-
-    pub fn getWidth(&self) -> usize {
+    pub fn get_width(&self) -> usize {
         self.width
     }
-    pub fn getHeight(&self) -> usize {
+    pub fn get_height(&self) -> usize {
         self.height
     }
-    pub fn getPixel(&self, x: usize, y: usize) -> &glm::Vector3<f32> {
+    pub fn get_pixel(&self, x: usize, y: usize) -> &glm::Vector3<f32> {
         self.pixels.get(y * self.width + x).unwrap()
     }
-    pub fn setPixel(&mut self, x: usize, y: usize, color: &mut glm::Vector3<f32>) {
+    pub fn set_pixel(&mut self, x: usize, y: usize, color: &mut glm::Vector3<f32>) {
         if let Some(pixel) = self.pixels.get_mut(y * self.width + x) {
             *pixel = *color
         };

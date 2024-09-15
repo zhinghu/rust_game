@@ -1,10 +1,11 @@
+#![allow(dead_code)]
+
 mod kernel;
 mod shader;
-use std::time::Instant;
 
-use kernel::console;
+use std::io::{self, Write};
 
-fn main() {
+fn main() -> io::Result<()> {
     println!(
         "Version: {}-{}
 Author: Github mychinesepyl",
@@ -19,14 +20,11 @@ Author: Github mychinesepyl",
         term_h = size.rows as usize;
     });
     let mut color = kernel::Render::new(term_w, term_h);
+    let mut out = io::stdout();
 
-    // console::debug(format!("{}", color.render())); */
     kernel::shader::add(Box::new(shader::test_fs::test_fs));
-    loop {
-        //     println!("{}", color.render());
-        let a = Instant::now();
-        let presult = color.render();
-        let a = a.elapsed();
-        console::debug(format!("render time: {}", a.as_secs_f32()));
-    }
+    out.write(color.render().as_bytes())?;
+    out.flush()?;
+
+    Ok(())
 }

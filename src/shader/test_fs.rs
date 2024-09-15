@@ -1,4 +1,3 @@
-use super::super::console;
 use super::super::kernel::shader::*;
 
 pub struct test_fs;

@@ -1,15 +1,30 @@
-pub fn debug(text: String) {
-    println!("[\x1b[38;2;0;255;0mDEBUG\x1b[0m] {:?}", text);
+#[macro_export]
+macro_rules! csl_info {
+    ($($arg:tt)*) => {
+        print!("[\x1b[38;2;0;255;255mINFO\x1b[0m]\u{0020}");
+        println!($($arg)*);
+    };
 }
-
-pub fn info(text: String) {
-    println!("[\x1b[38;2;0;255;255mINFO\x1b[0m] {}", text);
+#[macro_export]
+macro_rules! csl_debug {
+    ($($arg:tt)*) => {
+        if cfg!(debug_assertions) {
+            print!("[DEBUG]\u{0020}");
+            println!($($arg)*);
+        }
+    };
 }
-
-pub fn err(text: String) {
-    println!("[\x1b[38;2;255;0;0mERROR\x1b[0m] {}", text);
+#[macro_export]
+macro_rules! csl_warn {
+    ($($arg:tt)*) => {
+        print!("[\x1b[38;2;255;47;0mWARN\x1b[0m]\u{0020}");
+        println!($($arg)*);
+    };
 }
-
-pub fn warn(text: String) {
-    println!("[\x1b[38;2;255;255;0mWARN\x1b[0m] {}", text);
+#[macro_export]
+macro_rules! csl_err {
+    ($($arg:tt)*) => {
+        eprint!("[\x1b[38;2;237;19;0mINFO\x1b[0m]\u{0020}");
+        eprintln!($($arg)*);
+    };
 }

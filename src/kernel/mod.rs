@@ -1,4 +1,5 @@
 pub mod color;
+#[macro_use]
 pub mod console;
 
 mod render;

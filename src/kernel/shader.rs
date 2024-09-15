@@ -29,7 +29,7 @@ impl FShader for empty_shader {
 static mut shaders: Vec<Box<dyn FShader + Send + Sync>> = Vec::new();
 
 pub fn add(shader: shader_type) {
-    console::info(format!("add {} shader", shader.get_name()));
+    csl_info!("add {} shader", shader.get_name());
     unsafe { shaders.push(shader) };
 }
 

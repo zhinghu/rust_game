@@ -64,7 +64,7 @@ impl Render {
         // apply shaders
         for s in self.shaders.iter() {
             self.pixels.par_iter_mut().for_each(|pixel| {
-                *pixel = s.main(*pixel);
+                *pixel = s.shader.main(*pixel);
             });
         }
     }

@@ -21,10 +21,13 @@ Author: Github mychinesepyl",
     });
     let mut color = kernel::Render::new(term_w, term_h);
     let mut out = io::stdout();
+    kernel::shader::add(Box::new(shader::test), true);
+    kernel::shader::add(Box::new(shader::tests), true);
 
-    kernel::shader::add(Box::new(shader::test_fs::test_fs));
-    out.write(color.render().as_bytes())?;
-    out.flush()?;
+    loop {
+        out.write(color.render().as_bytes())?;
+        out.flush()?;
+    }
 
     Ok(())
 }

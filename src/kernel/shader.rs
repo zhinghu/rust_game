@@ -13,7 +13,7 @@ pub trait FShader {
     fn get_name(&self) -> String;
 }
 
-pub type shaders_type = Vec<Box<dyn FShader + Send + Sync>>;
+pub type shaders_type = Vec<Shader>;
 pub type shader_type = Box<dyn FShader + 'static + Send + Sync>;
 pub struct empty_shader;
 impl FShader for empty_shader {
@@ -25,11 +25,23 @@ impl FShader for empty_shader {
     }
 }
 
-static mut shaders: Vec<Box<dyn FShader + Send + Sync>> = Vec::new();
+pub struct Shader {
+    pub status: bool,
+    pub shader: shader_type,
+    pub name: String,
+}
+static mut shaders: Vec<Shader> = Vec::new();
 
-pub fn add(shader: shader_type) {
+pub fn add(shader: shader_type, status: bool) {
     csl_info!("add {} shader", shader.get_name());
-    unsafe { shaders.push(shader) };
+    let name = shader.get_name();
+    unsafe {
+        shaders.push(Shader {
+            status,
+            shader: shader,
+            name,
+        })
+    };
 }
 
 pub fn get_shaders() -> &'static shaders_type {

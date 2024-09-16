@@ -47,7 +47,7 @@ impl Render {
 
     pub fn render(&mut self) -> String {
         let nsize = termsize::get().unwrap();
-        if (self.pixels.len() != nsize.rows as usize * nsize.cols as usize) {
+        if self.pixels.len() != nsize.rows as usize * nsize.cols as usize {
             self.pixels.resize(
                 nsize.rows as usize * nsize.cols as usize,
                 FData {
@@ -76,15 +76,16 @@ impl Render {
 
         self.use_shader();
 
-        for y in 0..self.height {
-            for x in 0..self.width {
-                let color = to_rgba3(self.get_pixel(x, y).rgb);
-                result = format!(
-                    "{result}\x1b[48;2;{};{};{}m\u{0020}",
+        self.pixels.iter().for_each(|pixel| {
+            let color = to_rgba3(pixel.rgb);
+            result.push_str(
+                format!(
+                    "\x1b[48;2;{};{};{}m\u{0020}",
                     color.x as u8, color.y as u8, color.z as u8
-                );
-            }
-        }
+                )
+                .as_str(),
+            );
+        });
 
         format!("{}\x1b[0m", result)
     }

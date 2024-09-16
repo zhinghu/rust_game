@@ -6,6 +6,7 @@ pub struct Render {
     width: usize,
     height: usize,
     pixels: Vec<FData>,
+    old_pixels: Vec<FData>,
     shaders: &'static shaders_type,
 }
 
@@ -33,17 +34,45 @@ impl Render {
                 ),
             };
         });
+        let old_pixels = pixels.clone();
         csl_debug!("inited vector len: {}", pixels.len());
         Render {
             width,
             height,
             pixels,
+            old_pixels,
             shaders: get_shaders(),
         }
     }
 
     pub fn render(&mut self) -> String {
+        let nsize = termsize::get().unwrap();
+        if (self.pixels.len() != nsize.rows as usize * nsize.cols as usize) {
+            self.pixels.resize(
+                nsize.rows as usize * nsize.cols as usize,
+                FData {
+                    position: glm::vec2(0.0, 0.0),
+                    rgb: glm::vec3(-1.0, -1.0, -1.0),
+                },
+            );
+            self.width = nsize.cols as usize;
+            self.height = nsize.rows as usize;
+            self.pixels
+                .par_iter_mut()
+                .enumerate()
+                .for_each(|(i, pixel)| {
+                    *pixel = FData {
+                        rgb: glm::vec3(-1.0, -1.0, -1.0),
+                        position: glm::vec2(
+                            (i % self.width) as f32 / self.width as f32,
+                            (i as f32 / self.width as f32) / self.height as f32,
+                        ),
+                    };
+                });
+        }
+
         let mut result: String = String::from("\x1b[0;0H");
+        self.old_pixels = self.pixels.clone();
 
         self.use_shader();
 

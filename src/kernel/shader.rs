@@ -2,10 +2,9 @@ use std::marker::{Send, Sync};
 
 use super::console;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct FData {
-    pub x: usize,
-    pub y: usize,
+    pub position: glm::Vector2<f32>,
     pub rgb: glm::Vector3<f32>,
 }
 

@@ -5,6 +5,7 @@ edition = "2021"
 build = "build.rs"
 
 [dependencies]
+ctrlc = "3.4.5"
 glm = "0.2.3"
 rayon = "1.10.0"
 termsize = "0.1.9"

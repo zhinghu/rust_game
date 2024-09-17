@@ -11,9 +11,11 @@ impl FShader for test_fs {
             .unwrap()
             .as_secs_f64();
 
-        data.rgb.x = f64::sin(time) as f32;
-        data.rgb.y = f64::cos(time) as f32;
-        data.rgb.z = f64::sin(f64::cos(time)) as f32;
+        data.rgb.x = f64::sin(time + data.position.x as f64) as f32;
+        data.rgb.y = f64::cos(time + data.position.y as f64) as f32;
+        data.rgb.z = f64::sin(f64::cos(
+            time + data.position.x as f64 + data.position.y as f64,
+        )) as f32;
 
         data
     }

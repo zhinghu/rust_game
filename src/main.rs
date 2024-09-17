@@ -13,7 +13,6 @@ Author: Github mychinesepyl",
     println!("");
     let mut color = kernel::Render::new();
     kernel::shader::add(Box::new(shader::test), true);
-    kernel::shader::add(Box::new(shader::tests), true);
 
     loop {
         color.render().unwrap();

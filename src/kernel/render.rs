@@ -100,11 +100,11 @@ impl Render {
 
     pub fn use_shader(&mut self) {
         // apply shaders
-        for s in self.shaders.iter() {
+        self.shaders.iter().filter(|&s| s.status).for_each(|s| {
             self.pixels.par_iter_mut().for_each(|pixel| {
                 *pixel = s.shader.main(*pixel);
             });
-        }
+        });
     }
     pub fn get_width(&self) -> usize {
         self.width

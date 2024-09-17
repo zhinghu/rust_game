@@ -3,9 +3,7 @@
 mod kernel;
 mod shader;
 
-use std::io::{self, Write};
-
-fn main() -> io::Result<()> {
+fn main() {
     println!(
         "Version: {}-{}
 Author: Github mychinesepyl",
@@ -13,21 +11,11 @@ Author: Github mychinesepyl",
         env!("CARGO_PKG_VERSION")
     );
     println!("");
-    let mut term_w: usize = 1;
-    let mut term_h: usize = 1;
-    termsize::get().map(|size| {
-        term_w = size.cols as usize;
-        term_h = size.rows as usize;
-    });
-    let mut color = kernel::Render::new(term_w, term_h);
-    let mut out = io::stdout();
+    let mut color = kernel::Render::new();
     kernel::shader::add(Box::new(shader::test), true);
     kernel::shader::add(Box::new(shader::tests), true);
 
     loop {
-        out.write(color.render().as_bytes())?;
-        out.flush()?;
+        color.render().unwrap();
     }
-
-    Ok(())
 }

@@ -1,3 +1,5 @@
+use std::io::{self, Write};
+
 use super::color::to_rgba3;
 use super::{console, shader::*};
 use rayon::prelude::*;
@@ -11,9 +13,11 @@ pub struct Render {
 }
 
 impl Render {
-    pub fn new(width: usize, height: usize) -> Render {
-        assert!(width != 0);
-        assert!(height != 0);
+    pub fn new() -> Render {
+        let (width, height) = (
+            termsize::get().unwrap().cols as usize,
+            termsize::get().unwrap().rows as usize,
+        );
         csl_info!("creating buffer vector");
         csl_debug!("width * height: {}", width * height);
         let mut pixels: Vec<FData> = Vec::with_capacity(width * height);
@@ -45,7 +49,7 @@ impl Render {
         }
     }
 
-    pub fn render(&mut self) -> String {
+    pub fn render(&mut self) -> io::Result<()> {
         let nsize = termsize::get().unwrap();
         if self.pixels.len() != nsize.rows as usize * nsize.cols as usize {
             self.pixels.resize(
@@ -71,23 +75,27 @@ impl Render {
                 });
         }
 
-        let mut result: String = String::from("\x1b[0;0H");
+        let mut result = io::BufWriter::new(io::stdout().lock());
+        result.write("\x1b[0;0H".as_bytes())?;
         self.old_pixels = self.pixels.clone();
 
         self.use_shader();
 
         self.pixels.iter().for_each(|pixel| {
             let color = to_rgba3(pixel.rgb);
-            result.push_str(
-                format!(
-                    "\x1b[48;2;{};{};{}m\u{0020}",
-                    color.x as u8, color.y as u8, color.z as u8
+            result
+                .write_all(
+                    format!(
+                        "\x1b[48;2;{};{};{}m\u{0020}",
+                        color.x as u8, color.y as u8, color.z as u8
+                    )
+                    .as_bytes(),
                 )
-                .as_str(),
-            );
+                .unwrap();
         });
 
-        format!("{}\x1b[0m", result)
+        result.write_all("\x1b[0m".as_bytes())?;
+        Ok(())
     }
 
     pub fn use_shader(&mut self) {

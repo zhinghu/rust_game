@@ -1,21 +1,23 @@
-use std::f64;
-
-use super::super::kernel::shader::*;
+use super::super::kernel::shader_tool::*;
 
 pub struct test_fs;
 
 impl FShader for test_fs {
     fn main(&self, mut data: FData) -> FData {
-        let time = std::time::SystemTime::now()
-            .duration_since(std::time::UNIX_EPOCH)
-            .unwrap()
-            .as_secs_f64();
-
-        data.rgb.x = f64::sin(time + data.position.x as f64) as f32;
-        data.rgb.y = f64::cos(time + data.position.y as f64) as f32;
-        data.rgb.z = f64::sin(f64::cos(
-            time + data.position.x as f64 + data.position.y as f64,
-        )) as f32;
+        if delta_to_pixels(
+            vec2(-0.3, -0.3),
+            vec2(-0.3, 0.3),
+            vec2(0.3, -0.3),
+            data.position,
+        ) || delta_to_pixels(
+            vec2(0.3, -0.3),
+            vec2(0.3, 0.3),
+            vec2(-0.3, 0.3),
+            data.position,
+        ) {
+            data.rgb.x = data.position.x;
+            data.rgb.y = data.position.y;
+        }
 
         data
     }

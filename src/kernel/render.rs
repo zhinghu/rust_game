@@ -25,7 +25,7 @@ impl Render {
         pixels.resize(
             width * height,
             FData {
-                position: glm::vec2(0.0, 0.0),
+                position: glm::vec2(-1.0, -1.0),
                 rgb: glm::vec3(-1.0, -1.0, -1.0),
             },
         );
@@ -33,8 +33,8 @@ impl Render {
             *pixel = FData {
                 rgb: glm::vec3(-1.0, -1.0, -1.0),
                 position: glm::vec2(
-                    (i % width) as f32 / width as f32,
-                    (i as f32 / width as f32) / height as f32,
+                    (i % width) as f32 / width as f32 * 2.0 - 1.0,
+                    (i as f32 / width as f32) / height as f32 * 2.0 - 1.0,
                 ),
             };
         });
@@ -55,7 +55,7 @@ impl Render {
             self.pixels.resize(
                 nsize.rows as usize * nsize.cols as usize,
                 FData {
-                    position: glm::vec2(0.0, 0.0),
+                    position: glm::vec2(-1.0, -1.0),
                     rgb: glm::vec3(-1.0, -1.0, -1.0),
                 },
             );
@@ -68,8 +68,8 @@ impl Render {
                     *pixel = FData {
                         rgb: glm::vec3(-1.0, -1.0, -1.0),
                         position: glm::vec2(
-                            (i % self.width) as f32 / self.width as f32,
-                            (i as f32 / self.width as f32) / self.height as f32,
+                            (i % self.width) as f32 / self.width as f32 * 2.0 - 1.0,
+                            (i as f32 / self.width as f32) / self.height as f32 * 2.0 - 1.0,
                         ),
                     };
                 });
@@ -79,7 +79,12 @@ impl Render {
         result.write("\x1b[0;0H".as_bytes())?;
         self.old_pixels = self.pixels.clone();
 
-        self.use_shader();
+        // apply shaders
+        self.shaders.iter().filter(|&s| s.status).for_each(|s| {
+            self.pixels.par_iter_mut().for_each(|pixel| {
+                *pixel = s.shader.main(*pixel);
+            });
+        });
 
         self.pixels.iter().for_each(|pixel| {
             let color = to_rgba3(pixel.rgb);
@@ -98,26 +103,13 @@ impl Render {
         Ok(())
     }
 
-    pub fn use_shader(&mut self) {
-        // apply shaders
-        self.shaders.iter().filter(|&s| s.status).for_each(|s| {
-            self.pixels.par_iter_mut().for_each(|pixel| {
-                *pixel = s.shader.main(*pixel);
-            });
-        });
-    }
     pub fn get_width(&self) -> usize {
         self.width
     }
     pub fn get_height(&self) -> usize {
         self.height
     }
-    pub fn get_pixel(&self, x: usize, y: usize) -> &FData {
-        self.pixels.get(y * self.width + x).unwrap()
-    }
-    pub fn set_pixel(&mut self, x: usize, y: usize, color: &FData) {
-        if let Some(pixel) = self.pixels.get_mut(y * self.width + x) {
-            *pixel = *color
-        };
+    pub fn get_pixels(&self) -> &Vec<FData> {
+        &self.pixels
     }
 }

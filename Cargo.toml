@@ -5,8 +5,11 @@ edition = "2021"
 
 [dependencies]
 ctrlc = "3.4.5"
+env_logger = "0.11.5"
 glm = "0.2.3"
+lazy_static = "1.5.0"
 lerp = "0.5.0"
+log = "0.4.22"
 rayon = "1.10.0"
 termsize = "0.1.9"
 

@@ -1,49 +1,14 @@
-use std::marker::{Send, Sync};
+use std::collections::HashMap;
+use std::sync::RwLock;
 
-use super::console;
+struct VertexShader;
+struct FragmentShader;
 
-#[derive(Debug, Clone, Copy)]
-pub struct FData {
-    pub position: glm::Vector2<f32>,
-    pub rgb: glm::Vector3<f32>,
-}
-
-pub trait FShader {
-    fn main(&self, data: FData) -> FData;
-    fn get_name(&self) -> String;
-}
-
-pub type shaders_type = Vec<Shader>;
-pub type shader_type = Box<dyn FShader + 'static + Send + Sync>;
-pub struct empty_shader;
-impl FShader for empty_shader {
-    fn main(&self, data: FData) -> FData {
-        data
-    }
-    fn get_name(&self) -> String {
-        "empty_shader".to_string()
-    }
-}
-
-pub struct Shader {
-    pub status: bool,
-    pub shader: shader_type,
-    pub name: String,
-}
-static mut shaders: Vec<Shader> = Vec::new();
-
-pub fn add(shader: shader_type, status: bool) {
-    csl_info!("add {} shader", shader.get_name());
-    let name = shader.get_name();
-    unsafe {
-        shaders.push(Shader {
-            status,
-            shader: shader,
-            name,
-        })
+lazy_static::lazy_static! {
+    static ref VSHADERS: RwLock<HashMap<String, Box<VertexShader>>> = {
+        RwLock::new(HashMap::new())
     };
-}
-
-pub fn get_shaders() -> &'static shaders_type {
-    unsafe { &shaders }
+    static ref FSHADERS: RwLock<HashMap<String, Box<FragmentShader>>> = {
+        RwLock::new(HashMap::new())
+    };
 }

@@ -1,8 +1,12 @@
 use std::collections::HashMap;
 use std::sync::RwLock;
 
-struct VertexShader;
-struct FragmentShader;
+pub struct VertexShader {
+    program: Box<dyn Fn() + Send + Sync + 'static>,
+}
+pub struct FragmentShader {
+    program: Box<dyn Fn() + Send + Sync + 'static>,
+}
 
 lazy_static::lazy_static! {
     static ref VSHADERS: RwLock<HashMap<String, Box<VertexShader>>> = {

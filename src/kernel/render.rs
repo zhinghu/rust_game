@@ -19,6 +19,9 @@ impl FrameBuffer {
 }
 
 pub fn init() {
+    if *INITED.lock().unwrap() {
+        return;
+    }
     *INITED.lock().unwrap() = true;
     pixels.write().unwrap().resize(
         (termsize::get().unwrap().cols * termsize::get().unwrap().rows) as usize,
@@ -27,4 +30,8 @@ pub fn init() {
             0.0,
         ),
     );
+}
+
+pub fn render() {
+    todo!("渲染没做");
 }

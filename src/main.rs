@@ -7,5 +7,5 @@ fn main() {
         std::env::set_var("RUST_LOG", "info");
     }
     env_logger::init();
-    kernel::render::init();
+    kernel::render_base::init();
 }

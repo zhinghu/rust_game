@@ -17,20 +17,39 @@ lazy_static::lazy_static! {
     };
 }
 
-pub fn add_vs<F: Fn() + Send + Sync + 'static>(name_id: &str, vs: F) {
-    VSHADERS.write().unwrap().insert(
-        name_id.to_string(),
-        Box::new(VertexShader {
-            program: Box::new(vs),
-        }),
-    );
+pub enum Shader {
+    VertexShader,
+    FragmentShader,
 }
 
-pub fn add_fs<F: Fn() + Send + Sync + 'static>(name_id: &str, fs: F) {
-    FSHADERS.write().unwrap().insert(
-        name_id.to_string(),
-        Box::new(FragmentShader {
-            program: Box::new(fs),
-        }),
-    );
+pub fn add<F: Fn() + Send + Sync + 'static>(shader_type: Shader, name_id: &str, shader: F) {
+    match shader_type {
+        Shader::VertexShader => {
+            VSHADERS.write().unwrap().insert(
+                name_id.to_string(),
+                Box::new(VertexShader {
+                    program: Box::new(shader),
+                }),
+            );
+        }
+        Shader::FragmentShader => {
+            FSHADERS.write().unwrap().insert(
+                name_id.to_string(),
+                Box::new(FragmentShader {
+                    program: Box::new(shader),
+                }),
+            );
+        }
+    }
+}
+
+pub fn remove(shader_type: Shader, name_id: &str) {
+    match shader_type {
+        Shader::VertexShader => {
+            VSHADERS.write().unwrap().remove(name_id).unwrap();
+        }
+        Shader::FragmentShader => {
+            FSHADERS.write().unwrap().remove(name_id).unwrap();
+        }
+    }
 }

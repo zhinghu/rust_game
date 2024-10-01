@@ -61,12 +61,12 @@ lazy_static::lazy_static! {
                     .replace("-", "_");
                 writeln!(
                     &mut mods_file,
-                    "\u{0020}\u{0020}\u{0020}\u{0020} {}(\"{}\", {});",
+                    "\u{0020}\u{0020}\u{0020}\u{0020} super::kernel::shader::add({}, \"{}\", {});",
                     if mod_name.len() >= 2 {
                         if &mod_name[..2] == "vs" {
-                            "super::kernel::shader::add_vs"
+                            "super::kernel::shader::Shader::VertexShader"
                         } else {
-                            "super::kernel::shader::add_fs"
+                            "super::kernel::shader::Shader::FragmentShader"
                         }
                     } else {
                         ""

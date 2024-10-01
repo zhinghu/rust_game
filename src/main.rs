@@ -8,7 +8,6 @@ fn main() {
         std::env::set_var("RUST_LOG", "info");
     }
     env_logger::init();
+    shaders::init();
     let renderer = kernel::Terminal_renderer::new();
-
-    kernel::shader::add_vs("test", shaders::vs_test);
 }

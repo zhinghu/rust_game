@@ -1,4 +1,5 @@
 mod kernel;
+mod shaders;
 
 fn main() {
     if cfg!(debug_assertions) {
@@ -7,5 +8,7 @@ fn main() {
         std::env::set_var("RUST_LOG", "info");
     }
     env_logger::init();
-    kernel::render_base::init();
+    let renderer = kernel::Terminal_renderer::new();
+
+    kernel::shader::add_vs("test", shaders::vs_test);
 }

@@ -34,9 +34,9 @@ lazy_static::lazy_static! {
                 writeln!(
                     &mut mods_file,
                     "mod {};use {}::{};",
-                    mod_name,
-                    mod_name,
-                    mod_name.replace("file", "")
+                    &mod_name,
+                    &mod_name,
+                    &mod_name.replace("file", "")
                 )
                 .unwrap();
             }
@@ -61,7 +61,7 @@ lazy_static::lazy_static! {
                     .replace("-", "_");
                 writeln!(
                     &mut mods_file,
-                    "\u{0020}\u{0020}\u{0020}\u{0020} super::kernel::shader::add({}, \"{}\", {});",
+                    "\u{0020}\u{0020}\u{0020}\u{0020} super::kernel::shader::add({}, \"{}\", {}, {}::SHADER_ACTIVE);",
                     if mod_name.len() >= 2 {
                         if &mod_name[..2] == "vs" {
                             "super::kernel::shader::Shader::VertexShader"
@@ -72,7 +72,8 @@ lazy_static::lazy_static! {
                         ""
                     },
                     &mod_name.replace("file", "")[3..],
-                    mod_name.replace("file", "")
+                    &mod_name.replace("file", ""),
+                    &mod_name
                 )
                 .unwrap();
             }

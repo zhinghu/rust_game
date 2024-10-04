@@ -1,3 +1,5 @@
+use kernel::render_base::Renderer;
+
 mod kernel;
 mod shaders;
 
@@ -9,5 +11,11 @@ fn main() {
     }
     env_logger::init();
     shaders::init();
-    let renderer = kernel::Terminal_renderer::new();
+    let mut renderer = kernel::Terminal_renderer::new();
+    let rd = renderer.get_mut_canvas();
+
+    rd.fill_color(glm::vec4(1.0, -1.0, -1.0, 1.0));
+    rd.fill_color(glm::vec4(-1.0, 1.0, -1.0, -0.9));
+
+    renderer.render();
 }

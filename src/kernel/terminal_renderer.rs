@@ -2,22 +2,27 @@ use std::io::{self, Write};
 
 use super::render_base;
 
-pub struct Terminal_renderer {
+pub struct TerminalRenderer {
     canvas: render_base::Canvas,
+    old_canvas: render_base::Canvas,
 }
 
-impl Terminal_renderer {
+impl TerminalRenderer {
     pub fn new() -> Self {
         let canvas = render_base::Canvas::new(
             termsize::get().unwrap().cols as usize,
             termsize::get().unwrap().rows as usize,
+            palette::LinSrgb::new(0.0, 0.0, 0.0),
         );
 
-        Terminal_renderer { canvas }
+        TerminalRenderer {
+            old_canvas: canvas.clone(),
+            canvas,
+        }
     }
 }
 
-impl render_base::Renderer for Terminal_renderer {
+impl render_base::Renderer for TerminalRenderer {
     /// 渲染至终端
     fn render(&mut self) {
         self.canvas.size(Some([
@@ -26,16 +31,15 @@ impl render_base::Renderer for Terminal_renderer {
         ]));
 
         let mut buffer = io::stdout().lock();
-        let mut canvas_data = self.canvas.data(None);
+        let canvas_data = self.canvas.data(None);
         buffer.write("\x1b[0;0H".as_bytes()).unwrap();
         canvas_data.write().unwrap().iter_mut().for_each(|d| {
-            let color =
-                (*d.color(None) + glm::vec3(1.0, 1.0, 1.0)) * glm::vec3(127.5, 127.5, 127.5);
+            let color: palette::Srgb<u8> = d.color(None).into_encoding();
             buffer
                 .write(
                     format!(
                         "\x1b[48;2;{};{};{}m\u{0020}",
-                        color.x as u8, color.y as u8, color.z as u8
+                        color.red, color.green, color.blue
                     )
                     .as_bytes(),
                 )
@@ -44,6 +48,9 @@ impl render_base::Renderer for Terminal_renderer {
 
         buffer.write("\x1b[0m".as_bytes()).unwrap();
         buffer.flush().unwrap();
+        self.old_canvas = self.canvas.clone();
+        self.canvas.clear();
+        self.canvas.check();
     }
 
     fn get_canvas(&self) -> &render_base::Canvas {

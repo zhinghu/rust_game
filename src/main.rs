@@ -11,11 +11,10 @@ fn main() {
     }
     env_logger::init();
     shaders::init();
-    let mut renderer = kernel::Terminal_renderer::new();
+    let mut renderer = kernel::TerminalRenderer::new();
     let rd = renderer.get_mut_canvas();
 
-    rd.fill_color(glm::vec4(1.0, -1.0, -1.0, 1.0));
-    rd.fill_color(glm::vec4(-1.0, 1.0, -1.0, -0.9));
+    rd.fill_color(palette::LinSrgba::new(1.0, 0.0, 0.0, 1.0));
 
     renderer.render();
 }

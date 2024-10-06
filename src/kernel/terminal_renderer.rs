@@ -9,11 +9,12 @@ pub struct TerminalRenderer {
 
 impl TerminalRenderer {
     pub fn new() -> Self {
-        let canvas = render_base::Canvas::new(
-            termsize::get().unwrap().cols as usize,
-            termsize::get().unwrap().rows as usize,
+        let mut canvas = render_base::Canvas::new(
+            termsize::get().unwrap().cols as u32,
+            termsize::get().unwrap().rows as u32,
             palette::LinSrgb::new(0.0, 0.0, 0.0),
         );
+        canvas.clear();
 
         TerminalRenderer {
             old_canvas: canvas.clone(),
@@ -25,10 +26,10 @@ impl TerminalRenderer {
 impl render_base::Renderer for TerminalRenderer {
     /// 渲染至终端
     fn render(&mut self) {
-        self.canvas.size(Some([
-            termsize::get().unwrap().cols as usize,
-            termsize::get().unwrap().rows as usize,
-        ]));
+        self.canvas.size(Some(glm::uvec2(
+            termsize::get().unwrap().cols as u32,
+            termsize::get().unwrap().rows as u32,
+        )));
 
         let mut buffer = io::stdout().lock();
         let canvas_data = self.canvas.data(None);

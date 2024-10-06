@@ -1,7 +1,9 @@
-use kernel::render_base::Renderer;
+#![allow(non_snake_case)]
+
+use kernel::{components::camera::Camera2D, render_base::Renderer, tools::Transform};
+extern crate glam as glm;
 
 mod kernel;
-mod shaders;
 
 fn main() {
     if cfg!(debug_assertions) {
@@ -10,11 +12,13 @@ fn main() {
         std::env::set_var("RUST_LOG", "info");
     }
     env_logger::init();
-    shaders::init();
+    let mut count: i32 = 0;
     let mut renderer = kernel::TerminalRenderer::new();
-    let rd = renderer.get_mut_canvas();
+    let mut camera = Camera2D::new(glm::vec2(0.0, 0.0), 0.0, glm::vec2(5.0, 5.0));
+    loop {
+        let canvas_size = *renderer.get_canvas().clone().size(None);
+        count += 1;
 
-    rd.fill_color(palette::LinSrgba::new(1.0, 0.0, 0.0, 1.0));
-
-    renderer.render();
+        renderer.render();
+    }
 }

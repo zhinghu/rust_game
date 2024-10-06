@@ -1,31 +1,16 @@
-use ext::*;
-use glm::*;
+pub trait GlamVec {}
+impl GlamVec for glm::Vec2 {}
+impl GlamVec for glm::Vec3 {}
+impl GlamVec for glm::Vec3A {}
+impl GlamVec for glm::Vec4 {}
 
-#[derive(Debug)]
-pub struct Position {
-    pub xyz: Vector3<f32>,
-    pub radians: f32,
-    pub rotate_p: Vector3<f32>,
-    pub translation: Vector3<f32>,
-    pub translation_active: bool,
-    pub scale: Vector3<f32>,
-}
+pub trait GlamMat {}
+impl GlamMat for glm::Mat2 {}
+impl GlamMat for glm::Mat3 {}
+impl GlamMat for glm::Mat3A {}
+impl GlamMat for glm::Mat4 {}
 
-impl Position {
-    fn process(&self) -> Vec3 {
-        let mat4_1 = mat4(
-            1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-        );
-        let rotate_mat = rotate(&mat4_1, radians(self.radians), self.rotate_p);
-        let translation_mat = translate(&mat4_1, self.translation);
-        let scale_mat = scale(&mat4_1, self.scale);
-
-        (rotate_mat
-            * scale_mat
-            * translation_mat
-            * self
-                .xyz
-                .extend(if self.translation_active { 1.0 } else { 0.0 }))
-        .truncate(3)
-    }
+pub trait Transform<Output: GlamMat> {
+    #[must_use]
+    fn process(&self) -> Output;
 }

@@ -30,14 +30,14 @@ impl CanvasData {
 pub struct Canvas {
     clear_color: palette::LinSrgb<f32>,
     data: RwLock<Vec<CanvasData>>,
-    size: [usize; 2],
+    size: glm::UVec2,
 }
 impl Canvas {
     /// 创建一个长为`width`，宽为`height`的画布
-    pub fn new(width: usize, height: usize, clear: palette::LinSrgb<f32>) -> Self {
-        let mut data = RwLock::new(Vec::new());
+    pub fn new(width: u32, height: u32, clear: palette::LinSrgb<f32>) -> Self {
+        let data = RwLock::new(Vec::new());
         data.write().unwrap().resize(
-            width * height,
+            (width * height) as usize,
             CanvasData {
                 color: palette::LinSrgb::new(1.0, 1.0, 1.0),
                 deepin: -1.0,
@@ -47,15 +47,15 @@ impl Canvas {
         Self {
             clear_color: clear,
             data,
-            size: [width, height],
+            size: glm::uvec2(width, height),
         }
     }
 
     /// 检查数据有误的地方，并进行纠正
     pub fn check(&mut self) {
-        if self.data.read().unwrap().len() != self.size[0] * self.size[1] {
+        if self.data.read().unwrap().len() as u32 != self.size.x * self.size.y {
             self.data.write().unwrap().resize(
-                self.size[0] * self.size[1],
+                (self.size.x * self.size.y) as usize,
                 CanvasData {
                     color: self.clear_color,
                     deepin: 0.0,
@@ -85,20 +85,19 @@ impl Canvas {
     }
 
     /**
-     `size`既可以传入`None`来获取当前大小，也可以`Some([usize; 2])`来修改大小
+     `size`既可以传入`None`来获取当前大小，也可以`Some(glm::UVec2)`来修改大小
 
     示例:
     ```rust
-    canvas.size(None); // -> [114, 514]
-    canvas.size(Some([191, 9810])) // -> &self
+    canvas.size(None); // -> UVec2{114, 514}
+    canvas.size(Some(glm::uvec2(191, 9810))) // -> &self
     ```
     */
-    pub fn size(&mut self, size: Option<[usize; 2]>) -> &[usize; 2] {
+    pub fn size(&mut self, size: Option<glm::UVec2>) -> &glm::UVec2 {
         match size {
             Some(value) => {
-                debug!("value: {:?}", value);
                 self.data.write().unwrap().resize(
-                    value[0] * value[1],
+                    (value.x * value.y) as usize,
                     CanvasData {
                         color: self.clear_color,
                         deepin: 0.0,
@@ -120,7 +119,7 @@ impl Canvas {
         self.check();
         match data {
             Some(value) => {
-                if self.size[0] * self.size[1] != value.capacity() {
+                if self.size.x * self.size.y != value.capacity() as u32 {
                     error!("Different canvas sizes");
                     panic!("Different canvas sizes");
                 }
@@ -132,12 +131,74 @@ impl Canvas {
             None => &self.data,
         }
     }
+
+    /// 在一个点上放置一个颜色
+    pub fn put_color(&mut self, pos: glm::Vec2, color: palette::LinSrgba<f32>) {
+        self.put_color_origin(pos, color);
+        if pos.x - pos.x.floor() > 0.5 {
+            let mut cl = color.clone();
+            cl.alpha = cl.alpha * (0.5 - 1.0 + pos.x - pos.x.floor()) * 2.0;
+            self.put_color_origin(glm::vec2(pos.x.floor() + 1.0, pos.y), cl);
+        }
+        if pos.x - pos.x.floor() < 0.5 {
+            let mut cl = color.clone();
+            cl.alpha = cl.alpha * (0.5 - pos.x + pos.x.floor()) * 2.0;
+            self.put_color_origin(glm::vec2(pos.x.floor() - 1.0, pos.y), cl);
+        }
+        if pos.y - pos.y.floor() > 0.5 {
+            let mut cl = color.clone();
+            cl.alpha = cl.alpha * (0.5 - 1.0 + pos.y - pos.y.floor()) * 2.0;
+            self.put_color_origin(glm::vec2(pos.x, pos.y.floor() + 1.0), cl);
+        }
+        if pos.y - pos.y.floor() < 0.5 {
+            let mut cl = color.clone();
+            cl.alpha = cl.alpha * (0.5 - pos.y + pos.y.floor()) * 2.0;
+            self.put_color_origin(glm::vec2(pos.x, pos.y.floor() - 1.0), cl);
+        }
+
+        if pos.x - pos.x.floor() > 0.5 && pos.y - pos.y.floor() > 0.5 {
+            let mut cl = color.clone();
+            cl.alpha = cl.alpha
+                * ((0.5 - 1.0 + pos.x - pos.x.floor()) + (0.5 - 1.0 + pos.y - pos.y.floor()));
+            self.put_color_origin(glm::vec2(pos.x.floor() + 1.0, pos.y.floor() + 1.0), cl);
+        }
+        if pos.x - pos.x.floor() < 0.5 && pos.y - pos.y.floor() < 0.5 {
+            let mut cl = color.clone();
+            cl.alpha = cl.alpha * ((0.5 - pos.x + pos.x.floor()) + (0.5 - pos.y + pos.y.floor()));
+            self.put_color_origin(glm::vec2(pos.x.floor() - 1.0, pos.y.floor() - 1.0), cl);
+        }
+        if pos.y - pos.y.floor() > 0.5 && pos.x - pos.x.floor() < 0.5 {
+            let mut cl = color.clone();
+            cl.alpha =
+                cl.alpha * ((0.5 - 1.0 + pos.y - pos.y.floor()) + (0.5 - pos.x + pos.x.floor()));
+            self.put_color_origin(glm::vec2(pos.x.floor() - 1.0, pos.y.floor() + 1.0), cl);
+        }
+        if pos.y - pos.y.floor() < 0.5 && pos.x - pos.x.floor() > 0.5 {
+            let mut cl = color.clone();
+            cl.alpha =
+                cl.alpha * ((0.5 - pos.y + pos.y.floor()) + (0.5 - 1.0 + pos.x - pos.x.floor()));
+            self.put_color_origin(glm::vec2(pos.x.floor() + 1.0, pos.y.floor() - 1.0), cl);
+        }
+    }
+    fn put_color_origin(&mut self, pos: glm::Vec2, color: palette::LinSrgba<f32>) {
+        self.check();
+        if pos.x > self.size.x as f32 || pos.y > self.size.y as f32 || pos.x < 0.0 || pos.y < 0.0 {
+            return;
+        }
+        let mut d = self.data.write().unwrap();
+        let data = d
+            .get_mut((pos.y as u32 * self.size.x + pos.x as u32) as usize)
+            .unwrap();
+
+        data.color
+            .mix_assign(palette::LinSrgb::from_color(color), color.alpha);
+    }
 }
 impl Clone for Canvas {
     fn clone(&self) -> Self {
         let data = RwLock::new(Vec::new());
         data.write().unwrap().resize(
-            self.size[0] * self.size[1],
+            (self.size.x * self.size.y) as usize,
             CanvasData {
                 color: palette::LinSrgb::new(1.0, 1.0, 1.0),
                 deepin: -1.0,

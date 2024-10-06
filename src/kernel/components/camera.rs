@@ -1,3 +1,5 @@
+use glm::Vec3Swizzles;
+
 use super::super::tools;
 
 #[derive(Debug)]
@@ -12,8 +14,8 @@ impl Camera2D {
         Self { pos, rotate, scale }
     }
 }
-impl tools::Transform<glm::Mat3A> for Camera2D {
-    fn process(&self) -> glm::Mat3A {
+impl tools::TransformApply<glm::Vec2> for Camera2D {
+    fn apply(&self, v2: glm::Vec2) -> glm::Vec2 {
         let S = glm::mat3a(
             glm::vec3a(self.scale.x, 0.0, 0.0),
             glm::vec3a(0.0, self.scale.y, 0.0),
@@ -21,13 +23,13 @@ impl tools::Transform<glm::Mat3A> for Camera2D {
         );
         let R = glm::mat3a(
             glm::vec3a(
-                (self.rotate / 180.0).cos(),
-                -(self.rotate / 180.0).sin(),
+                (self.rotate / 360.0).cos(),
+                -(self.rotate / 360.0).sin(),
                 0.0,
             ),
             glm::vec3a(
-                (self.rotate / 180.0).sin(),
-                (self.rotate / 180.0).cos(),
+                (self.rotate / 360.0).sin(),
+                (self.rotate / 360.0).cos(),
                 0.0,
             ),
             glm::vec3a(0.0, 0.0, 1.0),
@@ -38,6 +40,6 @@ impl tools::Transform<glm::Mat3A> for Camera2D {
             glm::vec3a(0.0, 0.0, 1.0),
         );
 
-        T * S * R
+        ((T * S * R) * v2.extend(1.0).zyx()).xy()
     }
 }

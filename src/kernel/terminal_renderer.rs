@@ -8,11 +8,11 @@ pub struct TerminalRenderer {
 }
 
 impl TerminalRenderer {
-    pub fn new() -> Self {
+    pub fn new(clear_color: palette::LinSrgb) -> Self {
         let mut canvas = render_base::Canvas::new(
             termsize::get().unwrap().cols as u32,
             termsize::get().unwrap().rows as u32,
-            palette::LinSrgb::new(0.0, 0.0, 0.0),
+            clear_color,
         );
         canvas.clear();
 

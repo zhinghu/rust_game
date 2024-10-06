@@ -14,3 +14,7 @@ pub trait Transform<Output: GlamMat> {
     #[must_use]
     fn process(&self) -> Output;
 }
+pub trait TransformApply<Output: GlamVec> {
+    #[must_use]
+    fn apply(&self, v: Output) -> Output;
+}
